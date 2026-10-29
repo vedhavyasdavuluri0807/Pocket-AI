@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">Pocket AI</string>
+    <string name="default_assistant_name">Pocket Assistant</string>
+    <string name="tagline">Offline Personal Assistant</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_title">Welcome to Pocket AI</string>
+    <string name="onboarding_subtitle">Your private, truly offline AI assistant designed for your Galaxy device.</string>
+    <string name="onboarding_feature_privacy">100% On-Device Privacy</string>
+    <string name="onboarding_feature_privacy_desc">No cloud servers, accounts, or analytics. Your conversations never leave your phone.</string>
+    <string name="onboarding_feature_model">User-Supplied Models</string>
+    <string name="onboarding_feature_model_desc">Select your own GGUF model file from storage. Performance depends on your device RAM and CPU.</string>
+    <string name="onboarding_feature_attachments">Local File Insights</string>
+    <string name="onboarding_feature_attachments_desc">Process PDFs, Office documents, and images entirely on-device.</string>
+    <string name="onboarding_continue">Get Started</string>
+
+    <!-- Chat -->
+    <string name="chat_title">Conversation</string>
+    <string name="composer_hint">Ask anything…</string>
+    <string name="empty_chat_greeting">Hello! How can I help you today?</string>
+    <string name="model_not_loaded_warning">No AI model loaded. Select a GGUF model to start chatting.</string>
+    <string name="load_model_action">Manage Models</string>
+    <string name="stop_generation">Stop</string>
+    <string name="regenerate_response">Regenerate</string>
+    <string name="copy_text">Copy text</string>
+    <string name="delete_message">Delete</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_section_model">AI Model</string>
+    <string name="settings_section_personalization">Personalization</string>
+    <string name="settings_section_chat">Chat &amp; History</string>
+    <string name="settings_section_storage">Attachments &amp; Storage</string>
+    <string name="settings_section_privacy">Privacy</string>
+    <string name="settings_section_appearance">Appearance</string>
+    <string name="settings_section_about">About</string>
+</resources>
+

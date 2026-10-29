@@ -1,0 +1,24 @@
+*.iml
+.gradle
+/local.properties
+local.properties
+.idea/
+.DS_Store
+build/
+**/build/
+captures/
+.externalNativeBuild
+.cxx
+
+# Model weights & binaries (models are user-provided, never tracked in Git)
+*.gguf
+*.bin
+*.onnx
+*.safetensors
+models/
+attachments/
+
+# Secrets & keystores
+*.jks
+*.keystore
+google-services.json
