@@ -22,7 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.pocketai.assistant.ui.theme.OneUiTheme
+import com.pocketai.assistant.ui.theme.PocketTheme
 
 @Composable
 fun AppTopBar(
@@ -35,7 +35,7 @@ fun AppTopBar(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(OneUiTheme.colors.background)
+            .background(PocketTheme.colors.background)
             .statusBarsPadding()
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
@@ -53,7 +53,7 @@ fun AppTopBar(
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back",
-                            tint = OneUiTheme.colors.textPrimary
+                            tint = PocketTheme.colors.textPrimary
                         )
                     }
                 }
@@ -69,7 +69,7 @@ fun AppTopBar(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        // Large One UI Title Area
+        // Large Pocket AI Title Area
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -78,7 +78,7 @@ fun AppTopBar(
             Text(
                 text = title,
                 style = MaterialTheme.typography.displaySmall,
-                color = OneUiTheme.colors.textPrimary,
+                color = PocketTheme.colors.textPrimary,
                 fontWeight = FontWeight.Bold
             )
             if (!subtitle.isNullOrBlank()) {
@@ -86,7 +86,7 @@ fun AppTopBar(
                 Text(
                     text = subtitle,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = OneUiTheme.colors.textSecondary
+                    color = PocketTheme.colors.textSecondary
                 )
             }
         }

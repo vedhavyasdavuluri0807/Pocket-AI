@@ -28,7 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
 import com.pocketai.assistant.domain.model.AttachmentItem
-import com.pocketai.assistant.ui.theme.OneUiTheme
+import com.pocketai.assistant.ui.theme.PocketTheme
 import com.pocketai.assistant.ui.theme.PillShape
 
 @Composable
@@ -46,7 +46,7 @@ fun MessageComposer(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(OneUiTheme.colors.background)
+            .background(PocketTheme.colors.background)
             .navigationBarsPadding()
             .imePadding()
             .padding(bottom = 8.dp)
@@ -68,7 +68,7 @@ fun MessageComposer(
                 modifier = Modifier
                     .size(46.dp)
                     .clip(CircleShape)
-                    .background(OneUiTheme.colors.card),
+                    .background(PocketTheme.colors.card),
                 contentAlignment = Alignment.Center
             ) {
                 IconButton(
@@ -79,7 +79,7 @@ fun MessageComposer(
                     Icon(
                         imageVector = Icons.Default.AttachFile,
                         contentDescription = "Attach file",
-                        tint = if (!isGenerating) OneUiTheme.colors.primary else OneUiTheme.colors.textTertiary,
+                        tint = if (!isGenerating) PocketTheme.colors.primary else PocketTheme.colors.textTertiary,
                         modifier = Modifier.size(22.dp)
                     )
                 }
@@ -92,7 +92,7 @@ fun MessageComposer(
                 modifier = Modifier
                     .weight(1f)
                     .clip(PillShape)
-                    .background(OneUiTheme.colors.card)
+                    .background(PocketTheme.colors.card)
                     .padding(horizontal = 18.dp, vertical = 12.dp),
                 contentAlignment = Alignment.CenterStart
             ) {
@@ -100,7 +100,7 @@ fun MessageComposer(
                     Text(
                         text = "Message Pocket AI…",
                         style = MaterialTheme.typography.bodyLarge,
-                        color = OneUiTheme.colors.textTertiary
+                        color = PocketTheme.colors.textTertiary
                     )
                 }
 
@@ -109,9 +109,9 @@ fun MessageComposer(
                     onValueChange = onTextChanged,
                     modifier = Modifier.fillMaxWidth(),
                     textStyle = MaterialTheme.typography.bodyLarge.copy(
-                        color = OneUiTheme.colors.textPrimary
+                        color = PocketTheme.colors.textPrimary
                     ),
-                    cursorBrush = SolidColor(OneUiTheme.colors.primary),
+                    cursorBrush = SolidColor(PocketTheme.colors.primary),
                     maxLines = 5
                 )
             }
@@ -127,9 +127,9 @@ fun MessageComposer(
                     .clip(CircleShape)
                     .background(
                         when {
-                            isGenerating -> OneUiTheme.colors.cardSecondary
-                            canSend -> OneUiTheme.colors.primary
-                            else -> OneUiTheme.colors.card
+                            isGenerating -> PocketTheme.colors.cardSecondary
+                            canSend -> PocketTheme.colors.primary
+                            else -> PocketTheme.colors.card
                         }
                     ),
                 contentAlignment = Alignment.Center
@@ -142,7 +142,7 @@ fun MessageComposer(
                         Icon(
                             imageVector = Icons.Default.Stop,
                             contentDescription = "Stop generation",
-                            tint = OneUiTheme.colors.primary,
+                            tint = PocketTheme.colors.primary,
                             modifier = Modifier.size(24.dp)
                         )
                     }
@@ -155,7 +155,7 @@ fun MessageComposer(
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.Send,
                             contentDescription = "Send message",
-                            tint = if (canSend) androidx.compose.ui.graphics.Color.White else OneUiTheme.colors.textTertiary,
+                            tint = if (canSend) androidx.compose.ui.graphics.Color.White else PocketTheme.colors.textTertiary,
                             modifier = Modifier.size(20.dp)
                         )
                     }

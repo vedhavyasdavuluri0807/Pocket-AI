@@ -1,24 +1,51 @@
+# Android Studio & Gradle
 *.iml
-.gradle
+.gradle/
+**/.gradle/
 /local.properties
 local.properties
 .idea/
 .DS_Store
+Thumbs.db
 build/
 **/build/
 captures/
-.externalNativeBuild
-.cxx
+.externalNativeBuild/
+.cxx/
 
-# Model weights & binaries (models are user-provided, never tracked in Git)
+# Generated APKs, bundles, and build artifacts
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# Local databases, private chat histories, and test data
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+
+# Large AI model weights & binaries (models are user-provided, never tracked in Git)
 *.gguf
 *.bin
 *.onnx
 *.safetensors
+*.pt
+*.pth
+*.tflite
 models/
 attachments/
 
-# Secrets & keystores
+# Android signing keys, keystores, passwords, and secrets
 *.jks
 *.keystore
+*.key
+*.pem
+*.p12
+*.pfx
+secrets.properties
+key.properties
+*.env
 google-services.json

@@ -26,8 +26,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.pocketai.assistant.ui.theme.OneUiCardShape
-import com.pocketai.assistant.ui.theme.OneUiTheme
+import com.pocketai.assistant.ui.theme.PocketCardShape
+import com.pocketai.assistant.ui.theme.PocketTheme
 import com.pocketai.assistant.ui.theme.PillShape
 
 @Composable
@@ -49,18 +49,18 @@ fun EmptyChatGreeting(
             .padding(horizontal = 20.dp, vertical = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // One UI Avatar Icon
+        // Pocket AI Avatar Icon
         Box(
             modifier = Modifier
                 .size(68.dp)
                 .clip(CircleShape)
-                .background(OneUiTheme.colors.primary.copy(alpha = 0.12f)),
+                .background(PocketTheme.colors.primary.copy(alpha = 0.12f)),
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 imageVector = Icons.Default.Psychology,
                 contentDescription = null,
-                tint = OneUiTheme.colors.primary,
+                tint = PocketTheme.colors.primary,
                 modifier = Modifier.size(36.dp)
             )
         }
@@ -71,7 +71,7 @@ fun EmptyChatGreeting(
             text = "Hello! I'm $assistantName",
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold,
-            color = OneUiTheme.colors.textPrimary
+            color = PocketTheme.colors.textPrimary
         )
 
         Spacer(modifier = Modifier.height(6.dp))
@@ -81,19 +81,19 @@ fun EmptyChatGreeting(
             horizontalArrangement = Arrangement.spacedBy(6.dp),
             modifier = Modifier
                 .clip(PillShape)
-                .background(OneUiTheme.colors.cardSecondary)
+                .background(PocketTheme.colors.cardSecondary)
                 .padding(horizontal = 12.dp, vertical = 4.dp)
         ) {
             Icon(
                 imageVector = Icons.Default.Lock,
                 contentDescription = null,
-                tint = OneUiTheme.colors.primary,
+                tint = PocketTheme.colors.primary,
                 modifier = Modifier.size(12.dp)
             )
             Text(
                 text = "100% Offline • No Server Calls",
                 style = MaterialTheme.typography.labelSmall,
-                color = OneUiTheme.colors.textSecondary
+                color = PocketTheme.colors.textSecondary
             )
         }
 
@@ -103,7 +103,7 @@ fun EmptyChatGreeting(
             text = "Suggested Questions",
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.SemiBold,
-            color = OneUiTheme.colors.textPrimary,
+            color = PocketTheme.colors.textPrimary,
             modifier = Modifier.align(Alignment.Start)
         )
 
@@ -131,8 +131,8 @@ private fun SuggestedPromptCard(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(OneUiCardShape)
-            .background(OneUiTheme.colors.card)
+            .clip(PocketCardShape)
+            .background(PocketTheme.colors.card)
             .clickable(onClick = onClick)
             .padding(horizontal = 18.dp, vertical = 14.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -140,14 +140,14 @@ private fun SuggestedPromptCard(
         Icon(
             imageVector = Icons.Default.AutoAwesome,
             contentDescription = null,
-            tint = OneUiTheme.colors.primary,
+            tint = PocketTheme.colors.primary,
             modifier = Modifier.size(18.dp)
         )
         Spacer(modifier = Modifier.width(12.dp))
         Text(
             text = prompt,
             style = MaterialTheme.typography.bodyMedium,
-            color = OneUiTheme.colors.textPrimary,
+            color = PocketTheme.colors.textPrimary,
             fontWeight = FontWeight.Normal
         )
     }

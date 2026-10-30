@@ -7,6 +7,7 @@ plugins {
 android {
     namespace = "com.pocketai.assistant"
     compileSdk = 34
+    ndkVersion = "26.1.10909125"
 
     defaultConfig {
         applicationId = "com.pocketai.assistant"
@@ -18,6 +19,38 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
+        }
+
+        ndk {
+            abiFilters += listOf("arm64-v8a")
+        }
+
+        externalNativeBuild {
+            cmake {
+                arguments += listOf(
+                    "-DCMAKE_BUILD_TYPE=Release",
+                    "-DBUILD_SHARED_LIBS=ON",
+                    "-DLLAMA_BUILD_COMMON=ON",
+                    "-DLLAMA_BUILD_TESTS=OFF",
+                    "-DLLAMA_BUILD_EXAMPLES=OFF",
+                    "-DLLAMA_BUILD_TOOLS=OFF",
+                    "-DLLAMA_BUILD_SERVER=OFF",
+                    "-DLLAMA_BUILD_APP=OFF",
+                    "-DLLAMA_OPENSSL=OFF",
+                    "-DLLAMA_SUBPROCESS=OFF",
+                    "-DGGML_OPENMP=OFF",
+                    "-DGGML_CPU_KLEIDIAI=OFF",
+                    "-DGGML_BACKEND_DL=OFF",
+                    "-DGGML_LLAMAFILE=OFF"
+                )
+            }
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path = file("src/main/cpp/CMakeLists.txt")
+            version = "3.22.1"
         }
     }
 
@@ -104,5 +137,31 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
     testImplementation("androidx.test:core:1.5.0")
     testImplementation("androidx.room:room-testing:$roomVersion")
+}
+
+tasks.register("copyNativeLibsToJniLibs") {
+    description = "Copies compiled native libraries (.so) to app/src/main/jniLibs/arm64-v8a"
+    doLast {
+        val targetDir = file("src/main/jniLibs/arm64-v8a")
+        targetDir.mkdirs()
+        val cxxObjDir = file("build/intermediates/cxx")
+        if (cxxObjDir.exists()) {
+            cxxObjDir.walkTopDown().filter { it.extension == "so" && it.parentFile.name == "arm64-v8a" }.forEach { soFile ->
+                soFile.copyTo(File(targetDir, soFile.name), overwrite = true)
+                println("Copied ${soFile.name} to ${targetDir.path}")
+            }
+        }
+        val strippedDir = file("build/intermediates/stripped_native_libs")
+        if (strippedDir.exists()) {
+            strippedDir.walkTopDown().filter { it.extension == "so" && it.parentFile.name == "arm64-v8a" }.forEach { soFile ->
+                soFile.copyTo(File(targetDir, soFile.name), overwrite = true)
+                println("Copied ${soFile.name} from stripped to ${targetDir.path}")
+            }
+        }
+    }
+}
+
+tasks.matching { it.name == "assembleDebug" || it.name == "assembleRelease" }.configureEach {
+    finalizedBy("copyNativeLibsToJniLibs")
 }
 

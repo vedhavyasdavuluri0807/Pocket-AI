@@ -41,7 +41,7 @@ import com.pocketai.assistant.ui.components.AppTopBar
 import com.pocketai.assistant.ui.components.RoundedSettingsCard
 import com.pocketai.assistant.ui.components.SettingsCardDivider
 import com.pocketai.assistant.ui.components.SettingsRow
-import com.pocketai.assistant.ui.theme.OneUiTheme
+import com.pocketai.assistant.ui.theme.PocketTheme
 import com.pocketai.assistant.ui.theme.PillShape
 
 @Composable
@@ -63,7 +63,7 @@ fun PersonalizationScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(OneUiTheme.colors.background)
+            .background(PocketTheme.colors.background)
     ) {
         AppTopBar(
             title = "Personalization",
@@ -81,7 +81,7 @@ fun PersonalizationScreen(
             // Identity Header
             SettingsSectionHeader(title = "Assistant Identity")
             RoundedSettingsCard {
-                OneUiInputField(
+                PocketInputField(
                     label = "Display Name",
                     value = assistantNameInput,
                     onValueChange = {
@@ -91,7 +91,7 @@ fun PersonalizationScreen(
                     placeholder = "e.g. Pocket Assistant"
                 )
                 SettingsCardDivider()
-                OneUiInputField(
+                PocketInputField(
                     label = "Preferred Response Language",
                     value = languageInput,
                     onValueChange = {
@@ -118,7 +118,7 @@ fun PersonalizationScreen(
 
                 if (prefs.responseTone == ResponseTone.CUSTOM) {
                     SettingsCardDivider()
-                    OneUiInputField(
+                    PocketInputField(
                         label = "Custom Tone Description",
                         value = customToneInput,
                         onValueChange = {
@@ -144,12 +144,12 @@ fun PersonalizationScreen(
                         Text(
                             text = "Casual Conversational Style",
                             style = MaterialTheme.typography.titleMedium,
-                            color = OneUiTheme.colors.textPrimary
+                            color = PocketTheme.colors.textPrimary
                         )
                         Text(
                             text = "Use informal, conversational expressions",
                             style = MaterialTheme.typography.bodyMedium,
-                            color = OneUiTheme.colors.textSecondary
+                            color = PocketTheme.colors.textSecondary
                         )
                     }
                     Switch(
@@ -157,7 +157,7 @@ fun PersonalizationScreen(
                         onCheckedChange = { viewModel.updateCasualStyle(it) },
                         colors = SwitchDefaults.colors(
                             checkedThumbColor = androidx.compose.ui.graphics.Color.White,
-                            checkedTrackColor = OneUiTheme.colors.primary
+                            checkedTrackColor = PocketTheme.colors.primary
                         )
                     )
                 }
@@ -168,7 +168,7 @@ fun PersonalizationScreen(
                     Text(
                         text = "Response Length Preference",
                         style = MaterialTheme.typography.titleMedium,
-                        color = OneUiTheme.colors.textPrimary
+                        color = PocketTheme.colors.textPrimary
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(
@@ -182,7 +182,7 @@ fun PersonalizationScreen(
                                     .weight(1f)
                                     .clip(PillShape)
                                     .background(
-                                        if (isSelected) OneUiTheme.colors.primary else OneUiTheme.colors.cardSecondary
+                                        if (isSelected) PocketTheme.colors.primary else PocketTheme.colors.cardSecondary
                                     )
                                     .clickable { viewModel.updateResponseLength(len) }
                                     .padding(vertical = 10.dp),
@@ -191,7 +191,7 @@ fun PersonalizationScreen(
                                 Text(
                                     text = len.name.lowercase().replaceFirstChar { it.uppercase() },
                                     style = MaterialTheme.typography.labelMedium,
-                                    color = if (isSelected) androidx.compose.ui.graphics.Color.White else OneUiTheme.colors.textPrimary,
+                                    color = if (isSelected) androidx.compose.ui.graphics.Color.White else PocketTheme.colors.textPrimary,
                                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
                                 )
                             }
@@ -203,7 +203,7 @@ fun PersonalizationScreen(
             // User Preference Notes & System Instructions
             SettingsSectionHeader(title = "Custom System Instructions & User Context")
             RoundedSettingsCard {
-                OneUiInputField(
+                PocketInputField(
                     label = "Custom System Instructions",
                     value = customInstructionsInput,
                     onValueChange = {
@@ -214,7 +214,7 @@ fun PersonalizationScreen(
                     maxLines = 4
                 )
                 SettingsCardDivider()
-                OneUiInputField(
+                PocketInputField(
                     label = "User Notes / Context",
                     value = userNotesInput,
                     onValueChange = {
@@ -265,19 +265,19 @@ fun ToneOptionRow(
         RadioButton(
             selected = isSelected,
             onClick = onSelect,
-            colors = RadioButtonDefaults.colors(selectedColor = OneUiTheme.colors.primary)
+            colors = RadioButtonDefaults.colors(selectedColor = PocketTheme.colors.primary)
         )
         Spacer(modifier = Modifier.width(12.dp))
         Text(
             text = title,
             style = MaterialTheme.typography.bodyLarge,
-            color = OneUiTheme.colors.textPrimary
+            color = PocketTheme.colors.textPrimary
         )
     }
 }
 
 @Composable
-fun OneUiInputField(
+fun PocketInputField(
     label: String,
     value: String,
     onValueChange: (String) -> Unit,
@@ -293,28 +293,28 @@ fun OneUiInputField(
             text = label,
             style = MaterialTheme.typography.labelMedium,
             fontWeight = FontWeight.SemiBold,
-            color = OneUiTheme.colors.primary
+            color = PocketTheme.colors.primary
         )
         Spacer(modifier = Modifier.height(6.dp))
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(PillShape)
-                .background(OneUiTheme.colors.cardSecondary)
+                .background(PocketTheme.colors.cardSecondary)
                 .padding(horizontal = 14.dp, vertical = 10.dp)
         ) {
             if (value.isEmpty()) {
                 Text(
                     text = placeholder,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = OneUiTheme.colors.textTertiary
+                    color = PocketTheme.colors.textTertiary
                 )
             }
             BasicTextField(
                 value = value,
                 onValueChange = onValueChange,
-                textStyle = MaterialTheme.typography.bodyMedium.copy(color = OneUiTheme.colors.textPrimary),
-                cursorBrush = SolidColor(OneUiTheme.colors.primary),
+                textStyle = MaterialTheme.typography.bodyMedium.copy(color = PocketTheme.colors.textPrimary),
+                cursorBrush = SolidColor(PocketTheme.colors.primary),
                 maxLines = maxLines,
                 modifier = Modifier.fillMaxWidth()
             )

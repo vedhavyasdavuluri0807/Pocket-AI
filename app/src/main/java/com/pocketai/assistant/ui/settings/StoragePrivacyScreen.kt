@@ -27,11 +27,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.pocketai.assistant.ui.components.AppTopBar
-import com.pocketai.assistant.ui.components.OneUiSecondaryButton
+import com.pocketai.assistant.ui.components.PocketSecondaryButton
 import com.pocketai.assistant.ui.components.RoundedSettingsCard
 import com.pocketai.assistant.ui.components.SettingsCardDivider
 import com.pocketai.assistant.ui.components.SettingsRow
-import com.pocketai.assistant.ui.theme.OneUiTheme
+import com.pocketai.assistant.ui.theme.PocketTheme
 import com.pocketai.assistant.ui.theme.StatusError
 
 @Composable
@@ -46,7 +46,7 @@ fun StoragePrivacyScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(OneUiTheme.colors.background)
+            .background(PocketTheme.colors.background)
     ) {
         AppTopBar(
             title = "Storage & Privacy",

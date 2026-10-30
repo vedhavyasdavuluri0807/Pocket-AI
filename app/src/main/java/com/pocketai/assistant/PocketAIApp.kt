@@ -48,6 +48,9 @@ class PocketAIApp : Application() {
 
         preferencesManager = PreferencesManager(applicationContext)
 
+        // Initialize native llama.cpp runtime and CPU backends
+        com.pocketai.assistant.inference.engine.LlamaNativeBridge.init(applicationContext)
+
         localModelEngine = LlamaCppEngine(applicationContext)
 
         modelManager = ModelManager(

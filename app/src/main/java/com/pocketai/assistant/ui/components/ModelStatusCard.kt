@@ -30,8 +30,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.pocketai.assistant.domain.model.ModelInfo
 import com.pocketai.assistant.domain.model.ModelLoadStatus
-import com.pocketai.assistant.ui.theme.OneUiCardShape
-import com.pocketai.assistant.ui.theme.OneUiTheme
+import com.pocketai.assistant.ui.theme.PocketCardShape
+import com.pocketai.assistant.ui.theme.PocketTheme
 import com.pocketai.assistant.ui.theme.PillShape
 import com.pocketai.assistant.ui.theme.StatusError
 import com.pocketai.assistant.ui.theme.StatusSuccess
@@ -48,8 +48,8 @@ fun ModelStatusCard(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .clip(OneUiCardShape)
-            .background(OneUiTheme.colors.card)
+            .clip(PocketCardShape)
+            .background(PocketTheme.colors.card)
             .padding(18.dp)
     ) {
         if (modelInfo == null) {
@@ -79,20 +79,20 @@ fun ModelStatusCard(
                         text = "No AI Model Selected",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.SemiBold,
-                        color = OneUiTheme.colors.textPrimary
+                        color = PocketTheme.colors.textPrimary
                     )
                     Spacer(modifier = Modifier.height(2.dp))
                     Text(
                         text = "Select a GGUF model from device storage to enable offline chat.",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = OneUiTheme.colors.textSecondary
+                        color = PocketTheme.colors.textSecondary
                     )
                 }
             }
 
             Spacer(modifier = Modifier.height(14.dp))
 
-            OneUiActionButton(
+            PocketActionButton(
                 text = "Select Model File",
                 onClick = onChangeModelClick,
                 modifier = Modifier.fillMaxWidth()
@@ -111,7 +111,7 @@ fun ModelStatusCard(
                     Icon(
                         imageVector = Icons.Default.Memory,
                         contentDescription = null,
-                        tint = OneUiTheme.colors.primary,
+                        tint = PocketTheme.colors.primary,
                         modifier = Modifier.size(28.dp)
                     )
                     Spacer(modifier = Modifier.width(12.dp))
@@ -120,14 +120,14 @@ fun ModelStatusCard(
                             text = modelInfo.displayName,
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.SemiBold,
-                            color = OneUiTheme.colors.textPrimary,
+                            color = PocketTheme.colors.textPrimary,
                             maxLines = 1
                         )
                         Spacer(modifier = Modifier.height(2.dp))
                         Text(
                             text = "${modelInfo.architecture.uppercase()} • ${formatSize(modelInfo.fileSizeBytes)}",
                             style = MaterialTheme.typography.labelSmall,
-                            color = OneUiTheme.colors.textSecondary
+                            color = PocketTheme.colors.textSecondary
                         )
                     }
                 }
@@ -171,7 +171,7 @@ fun ModelStatusCard(
             ) {
                 when (modelInfo.loadStatus) {
                     ModelLoadStatus.LOADED -> {
-                        OneUiSecondaryButton(
+                        PocketSecondaryButton(
                             text = "Unload",
                             onClick = onUnloadClick,
                             modifier = Modifier.weight(1f)
@@ -183,18 +183,18 @@ fun ModelStatusCard(
                                 .weight(1f)
                                 .height(42.dp)
                                 .clip(PillShape)
-                                .background(OneUiTheme.colors.cardSecondary),
+                                .background(PocketTheme.colors.cardSecondary),
                             contentAlignment = Alignment.Center
                         ) {
                             CircularProgressIndicator(
                                 modifier = Modifier.size(20.dp),
-                                color = OneUiTheme.colors.primary,
+                                color = PocketTheme.colors.primary,
                                 strokeWidth = 2.dp
                             )
                         }
                     }
                     else -> {
-                        OneUiActionButton(
+                        PocketActionButton(
                             text = "Load Model",
                             onClick = onLoadClick,
                             modifier = Modifier.weight(1f)
@@ -202,7 +202,7 @@ fun ModelStatusCard(
                     }
                 }
 
-                OneUiSecondaryButton(
+                PocketSecondaryButton(
                     text = "Change",
                     onClick = onChangeModelClick,
                     modifier = Modifier.weight(1f)
@@ -216,9 +216,9 @@ fun ModelStatusCard(
 fun StatusBadge(status: ModelLoadStatus) {
     val (color, text, icon) = when (status) {
         ModelLoadStatus.LOADED -> Triple(StatusSuccess, "Loaded", Icons.Default.CheckCircle)
-        ModelLoadStatus.LOADING, ModelLoadStatus.VALIDATING -> Triple(OneUiTheme.colors.primary, "Loading…", null)
-        ModelLoadStatus.FAILED -> Triple(StatusError, "Error", Icons.Default.ErrorOutline)
-        ModelLoadStatus.NOT_LOADED -> Triple(StatusWarning, "Not Loaded", Icons.Default.WarningAmber)
+        ModelLoadStatus.LOADING, ModelLoadStatus.VALIDATING -> Triple(PocketTheme.colors.primary, "Loading…", null)
+        ModelLoadStatus.FAILED -> Triple(StatusError, "Failed", Icons.Default.ErrorOutline)
+        ModelLoadStatus.NOT_LOADED -> Triple(StatusWarning, "Unloaded", Icons.Default.WarningAmber)
     }
 
     Row(
@@ -247,7 +247,7 @@ fun StatusBadge(status: ModelLoadStatus) {
 }
 
 @Composable
-fun OneUiActionButton(
+fun PocketActionButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -256,7 +256,7 @@ fun OneUiActionButton(
         modifier = modifier
             .height(44.dp)
             .clip(PillShape)
-            .background(OneUiTheme.colors.primary)
+            .background(PocketTheme.colors.primary)
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
@@ -270,7 +270,7 @@ fun OneUiActionButton(
 }
 
 @Composable
-fun OneUiSecondaryButton(
+fun PocketSecondaryButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -279,14 +279,14 @@ fun OneUiSecondaryButton(
         modifier = modifier
             .height(44.dp)
             .clip(PillShape)
-            .background(OneUiTheme.colors.cardSecondary)
+            .background(PocketTheme.colors.cardSecondary)
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = text,
             style = MaterialTheme.typography.labelLarge,
-            color = OneUiTheme.colors.textPrimary,
+            color = PocketTheme.colors.textPrimary,
             fontWeight = FontWeight.Medium
         )
     }

@@ -31,7 +31,7 @@ import com.pocketai.assistant.ui.components.ChatBubble
 import com.pocketai.assistant.ui.components.EmptyChatGreeting
 import com.pocketai.assistant.ui.components.MessageComposer
 import com.pocketai.assistant.ui.components.ModelStatusCard
-import com.pocketai.assistant.ui.theme.OneUiTheme
+import com.pocketai.assistant.ui.theme.PocketTheme
 
 @Composable
 fun ChatScreen(
@@ -62,15 +62,17 @@ fun ChatScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(OneUiTheme.colors.background)
+            .background(PocketTheme.colors.background)
     ) {
-        // One UI Top Header
+        // Pocket AI Top Header
         AppTopBar(
             title = uiState.assistantName,
-            subtitle = if (uiState.modelInfo?.loadStatus == ModelLoadStatus.LOADED) {
-                "${uiState.modelInfo?.displayName} • Offline"
-            } else {
-                "No Model Loaded • Offline"
+            subtitle = when (uiState.modelInfo?.loadStatus) {
+                ModelLoadStatus.LOADED -> "${uiState.modelInfo?.displayName} • Ready"
+                ModelLoadStatus.LOADING, ModelLoadStatus.VALIDATING -> "Loading Model into RAM…"
+                ModelLoadStatus.FAILED -> "Model Load Failed • Tap to check"
+                ModelLoadStatus.NOT_LOADED -> "${uiState.modelInfo?.displayName} • Tap to load"
+                null -> "No Model Selected • Offline"
             },
             actions = {
                 IconButton(onClick = onNavigateToModels) {
@@ -78,9 +80,9 @@ fun ChatScreen(
                         imageVector = Icons.Default.Memory,
                         contentDescription = "Models",
                         tint = if (uiState.modelInfo?.loadStatus == ModelLoadStatus.LOADED) {
-                            OneUiTheme.colors.primary
+                            PocketTheme.colors.primary
                         } else {
-                            OneUiTheme.colors.textSecondary
+                            PocketTheme.colors.textSecondary
                         }
                     )
                 }
@@ -88,7 +90,7 @@ fun ChatScreen(
                     Icon(
                         imageVector = Icons.Default.Settings,
                         contentDescription = "Settings",
-                        tint = OneUiTheme.colors.textPrimary
+                        tint = PocketTheme.colors.textPrimary
                     )
                 }
             }

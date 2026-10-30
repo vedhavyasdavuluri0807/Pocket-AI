@@ -18,7 +18,7 @@ enum class AppThemeMode {
     SYSTEM, LIGHT, DARK
 }
 
-data class OneUiColorPalette(
+data class PocketColorPalette(
     val background: Color,
     val surface: Color,
     val card: Color,
@@ -33,11 +33,11 @@ data class OneUiColorPalette(
     val isDark: Boolean
 )
 
-val LocalOneUiColors = staticCompositionLocalOf<OneUiColorPalette> {
-    error("No OneUiColors provided")
+val LocalPocketColors = staticCompositionLocalOf<PocketColorPalette> {
+    error("No PocketColors provided")
 }
 
-private val DarkThemeColors = OneUiColorPalette(
+private val DarkThemeColors = PocketColorPalette(
     background = DarkBackground,
     surface = DarkSurface,
     card = DarkCard,
@@ -46,13 +46,13 @@ private val DarkThemeColors = OneUiColorPalette(
     textPrimary = DarkTextPrimary,
     textSecondary = DarkTextSecondary,
     textTertiary = DarkTextTertiary,
-    primary = OneUiBluePrimary,
-    primaryVariant = OneUiBlueLight,
+    primary = PocketBluePrimary,
+    primaryVariant = PocketBlueLight,
     codeBlockBackground = CodeBlockDark,
     isDark = true
 )
 
-private val LightThemeColors = OneUiColorPalette(
+private val LightThemeColors = PocketColorPalette(
     background = LightBackground,
     surface = LightSurface,
     card = LightCard,
@@ -61,14 +61,14 @@ private val LightThemeColors = OneUiColorPalette(
     textPrimary = LightTextPrimary,
     textSecondary = LightTextSecondary,
     textTertiary = LightTextTertiary,
-    primary = OneUiBluePrimary,
-    primaryVariant = OneUiBlueDark,
+    primary = PocketBluePrimary,
+    primaryVariant = PocketBlueDark,
     codeBlockBackground = CodeBlockLight,
     isDark = false
 )
 
 private val M3DarkColorScheme = darkColorScheme(
-    primary = OneUiBluePrimary,
+    primary = PocketBluePrimary,
     onPrimary = Color.White,
     background = DarkBackground,
     surface = DarkSurface,
@@ -79,7 +79,7 @@ private val M3DarkColorScheme = darkColorScheme(
 )
 
 private val M3LightColorScheme = lightColorScheme(
-    primary = OneUiBluePrimary,
+    primary = PocketBluePrimary,
     onPrimary = Color.White,
     background = LightBackground,
     surface = LightSurface,
@@ -116,20 +116,19 @@ fun PocketAITheme(
     }
 
     CompositionLocalProvider(
-        LocalOneUiColors provides customColors
+        LocalPocketColors provides customColors
     ) {
         MaterialTheme(
             colorScheme = m3Colors,
-            shapes = OneUiShapes,
-            typography = OneUiTypography,
+            shapes = PocketShapes,
+            typography = PocketTypography,
             content = content
         )
     }
 }
 
-object OneUiTheme {
-    val colors: OneUiColorPalette
+object PocketTheme {
+    val colors: PocketColorPalette
         @Composable
-        get() = LocalOneUiColors.current
+        get() = LocalPocketColors.current
 }
-

@@ -27,8 +27,49 @@ class ModelManager(
     val currentModelInfo: StateFlow<ModelInfo?> = _currentModelInfo.asStateFlow()
 
     init {
+        // Continuously sync model load status with native engine state
         applicationScope.launch {
-            // Restore active model if saved in preferences
+            engine.state.collect { runtimeState ->
+                val current = _currentModelInfo.value ?: return@collect
+                when (runtimeState) {
+                    is ModelRuntimeState.Loaded -> {
+                        if (current.loadStatus != ModelLoadStatus.LOADED) {
+                            _currentModelInfo.value = current.copy(
+                                loadStatus = ModelLoadStatus.LOADED,
+                                lastError = null
+                            )
+                        }
+                    }
+                    is ModelRuntimeState.Loading -> {
+                        if (current.loadStatus != ModelLoadStatus.LOADING) {
+                            _currentModelInfo.value = current.copy(
+                                loadStatus = ModelLoadStatus.LOADING,
+                                lastError = null
+                            )
+                        }
+                    }
+                    is ModelRuntimeState.Error -> {
+                        _currentModelInfo.value = current.copy(
+                            loadStatus = ModelLoadStatus.FAILED,
+                            lastError = runtimeState.message
+                        )
+                    }
+                    is ModelRuntimeState.Unloaded -> {
+                        if (current.loadStatus == ModelLoadStatus.LOADED || current.loadStatus == ModelLoadStatus.LOADING) {
+                            _currentModelInfo.value = current.copy(
+                                loadStatus = ModelLoadStatus.NOT_LOADED
+                            )
+                        }
+                    }
+                    is ModelRuntimeState.Generating -> {
+                        // Remain in LOADED state during active generation
+                    }
+                }
+            }
+        }
+
+        // Restore active model if saved in preferences
+        applicationScope.launch {
             val prefs = preferencesManager.userPreferencesFlow.first()
             prefs.activeModelUri?.let { uriStr ->
                 inspectAndSetModel(Uri.parse(uriStr))
@@ -37,6 +78,13 @@ class ModelManager(
     }
 
     suspend fun inspectAndSetModel(uri: Uri): ModelInfo? = withContext(Dispatchers.IO) {
+        // If an existing model was loaded, unload it before switching
+        if (_currentModelInfo.value?.loadStatus == ModelLoadStatus.LOADED) {
+            try {
+                engine.unloadModel()
+            } catch (_: Exception) {}
+        }
+
         val resolver = context.contentResolver
         var displayName = uri.lastPathSegment ?: "model.gguf"
         var fileSize = -1L
@@ -63,7 +111,7 @@ class ModelManager(
         val result = GgufValidator.inspectModelUri(context, uri, displayName, fileSize)
         when (result) {
             is GgufValidator.ValidationResult.Success -> {
-                val info = result.modelInfo
+                val info = result.modelInfo.copy(loadStatus = ModelLoadStatus.NOT_LOADED, lastError = null)
                 _currentModelInfo.value = info
                 preferencesManager.setActiveModelUri(uri.toString())
                 info
@@ -96,8 +144,12 @@ class ModelManager(
     }
 
     suspend fun loadCurrentModel(): Result<Unit> = withContext(Dispatchers.IO) {
-        val info = _currentModelInfo.value ?: return@withContext Result.failure(IllegalStateException("No model selected."))
+        val info = _currentModelInfo.value
+            ?: return@withContext Result.failure(IllegalStateException("No model selected. Please choose a GGUF file in Model Management."))
+
         try {
+            _currentModelInfo.value = info.copy(loadStatus = ModelLoadStatus.LOADING, lastError = null)
+
             val prefs = preferencesManager.userPreferencesFlow.first()
             val config = ModelConfig(
                 uriString = info.uriString,
@@ -108,20 +160,25 @@ class ModelManager(
                 temperature = prefs.temperature
             )
 
-            _currentModelInfo.value = info.copy(loadStatus = ModelLoadStatus.LOADING)
             engine.loadModel(config)
 
             _currentModelInfo.value = info.copy(loadStatus = ModelLoadStatus.LOADED, lastError = null)
             Result.success(Unit)
         } catch (e: Exception) {
-            _currentModelInfo.value = info.copy(loadStatus = ModelLoadStatus.FAILED, lastError = e.localizedMessage)
+            val errMessage = e.localizedMessage ?: "Failed to initialize model in native engine."
+            _currentModelInfo.value = info.copy(loadStatus = ModelLoadStatus.FAILED, lastError = errMessage)
             Result.failure(e)
         }
     }
 
     suspend fun unloadCurrentModel() = withContext(Dispatchers.IO) {
-        engine.unloadModel()
-        _currentModelInfo.value = _currentModelInfo.value?.copy(loadStatus = ModelLoadStatus.NOT_LOADED)
+        try {
+            engine.unloadModel()
+        } catch (_: Exception) {}
+        _currentModelInfo.value = _currentModelInfo.value?.copy(
+            loadStatus = ModelLoadStatus.NOT_LOADED,
+            lastError = null
+        )
     }
 
     suspend fun removeModelReference() = withContext(Dispatchers.IO) {
@@ -130,4 +187,3 @@ class ModelManager(
         preferencesManager.setActiveModelUri(null)
     }
 }
-

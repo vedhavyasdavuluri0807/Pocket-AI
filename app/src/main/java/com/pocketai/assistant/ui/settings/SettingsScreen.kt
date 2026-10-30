@@ -34,7 +34,7 @@ import com.pocketai.assistant.ui.components.RoundedSettingsCard
 import com.pocketai.assistant.ui.components.SettingsCardDivider
 import com.pocketai.assistant.ui.components.SettingsRow
 import com.pocketai.assistant.ui.theme.AppThemeMode
-import com.pocketai.assistant.ui.theme.OneUiTheme
+import com.pocketai.assistant.ui.theme.PocketTheme
 import com.pocketai.assistant.ui.theme.StatusError
 
 @Composable
@@ -52,7 +52,7 @@ fun SettingsScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(OneUiTheme.colors.background)
+            .background(PocketTheme.colors.background)
     ) {
         AppTopBar(
             title = "Settings",
@@ -145,7 +145,7 @@ fun SettingsScreen(
             RoundedSettingsCard {
                 SettingsRow(
                     title = "Pocket AI",
-                    subtitle = "Version 1.0.0 • Offline Samsung One UI Edition",
+                    subtitle = "Version 1.0.0 • Offline Mobile Edition",
                     icon = Icons.Default.Info,
                     showChevron = false
                 )
@@ -187,7 +187,7 @@ fun SettingsSectionHeader(title: String) {
         text = title,
         style = MaterialTheme.typography.titleSmall,
         fontWeight = FontWeight.SemiBold,
-        color = OneUiTheme.colors.primary,
+        color = PocketTheme.colors.primary,
         modifier = Modifier.padding(start = 10.dp, top = 4.dp)
     )
 }

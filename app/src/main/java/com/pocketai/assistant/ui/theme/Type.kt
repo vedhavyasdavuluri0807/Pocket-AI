@@ -6,8 +6,8 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
-val OneUiTypography = Typography(
-    // One UI Large Screen Header
+val PocketTypography = Typography(
+    // Modern Large Screen Header
     displaySmall = TextStyle(
         fontFamily = FontFamily.SansSerif,
         fontWeight = FontWeight.Bold,
@@ -71,4 +71,3 @@ val OneUiTypography = Typography(
         lineHeight = 14.sp
     )
 )
-

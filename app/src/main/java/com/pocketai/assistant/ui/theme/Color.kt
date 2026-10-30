@@ -2,12 +2,12 @@ package com.pocketai.assistant.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Samsung One UI Signature Blue
-val OneUiBluePrimary = Color(0xFF0381FE)
-val OneUiBlueDark = Color(0xFF0066D6)
-val OneUiBlueLight = Color(0xFF389BFD)
+// Primary Signature Blue
+val PocketBluePrimary = Color(0xFF0381FE)
+val PocketBlueDark = Color(0xFF0066D6)
+val PocketBlueLight = Color(0xFF389BFD)
 
-// Dark Palette (Samsung AMOLED Black & Charcoal)
+// Dark Palette (AMOLED Black & Charcoal)
 val DarkBackground = Color(0xFF0D0E12)
 val DarkSurface = Color(0xFF16181F)
 val DarkCard = Color(0xFF20232D)
@@ -17,7 +17,7 @@ val DarkTextPrimary = Color(0xFFF6F7FB)
 val DarkTextSecondary = Color(0xFF9EA4B5)
 val DarkTextTertiary = Color(0xFF6B7285)
 
-// Light Palette (Samsung Clean Mist & Pure White)
+// Light Palette (Clean Mist & Pure White)
 val LightBackground = Color(0xFFF3F4F7)
 val LightSurface = Color(0xFFFFFFFF)
 val LightCard = Color(0xFFFFFFFF)
@@ -40,4 +40,3 @@ val StatusInfo = Color(0xFF3B82F6)
 // Code block container
 val CodeBlockDark = Color(0xFF13151B)
 val CodeBlockLight = Color(0xFFEAECF1)
-

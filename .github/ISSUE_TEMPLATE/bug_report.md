@@ -10,8 +10,8 @@ assignees: ''
 A clear and concise description of what the bug is.
 
 **Device & OS Information**
-- Device: [e.g. Samsung Galaxy S23, Pixel 8]
-- Android Version: [e.g. Android 14, One UI 6.1]
+- Device: [e.g. Pixel 8, Galaxy S23, Xperia 1]
+- Android Version: [e.g. Android 14, Android 13]
 - Available RAM: [e.g. 8 GB]
 
 **Model Information**

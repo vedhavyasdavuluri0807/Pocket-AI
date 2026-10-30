@@ -2,6 +2,7 @@ package com.pocketai.assistant.inference.engine
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import com.pocketai.assistant.domain.inference.GenerationEvent
 import com.pocketai.assistant.domain.inference.GenerationRequest
 import com.pocketai.assistant.domain.inference.LocalModelEngine
@@ -25,6 +26,10 @@ class LlamaCppEngine(
     private val context: Context
 ) : LocalModelEngine {
 
+    companion object {
+        private const val TAG = "LlamaCppEngine"
+    }
+
     private val _state = MutableStateFlow<ModelRuntimeState>(ModelRuntimeState.Unloaded)
     override val state: Flow<ModelRuntimeState> = _state.asStateFlow()
 
@@ -43,7 +48,7 @@ class LlamaCppEngine(
     private val isGenerating = AtomicBoolean(false)
     private val stopRequested = AtomicBoolean(false)
 
-    override suspend fun loadModel(model: ModelConfig) = withContext(Dispatchers.IO) {
+    override suspend fun loadModel(model: ModelConfig): Unit = withContext(Dispatchers.IO) {
         if (_state.value is ModelRuntimeState.Generating) {
             throw IllegalStateException("Cannot switch or load model while generation is in progress.")
         }
@@ -59,8 +64,15 @@ class LlamaCppEngine(
         val fileLength = try {
             context.contentResolver.openFileDescriptor(uri, "r")?.use { it.statSize } ?: -1L
         } catch (e: Exception) {
-            _state.value = ModelRuntimeState.Error("Cannot access model file: ${e.localizedMessage}")
-            return@withContext
+            val err = "Cannot access model file: ${e.localizedMessage}"
+            _state.value = ModelRuntimeState.Error(err)
+            throw IllegalStateException(err, e)
+        }
+
+        if (fileLength <= 0) {
+            val err = "Selected model file is empty or inaccessible (size: $fileLength bytes)."
+            _state.value = ModelRuntimeState.Error(err)
+            throw IllegalStateException(err)
         }
 
         // Validate GGUF format
@@ -72,7 +84,7 @@ class LlamaCppEngine(
                 else -> "Model validation failed."
             }
             _state.value = ModelRuntimeState.Error(errMsg)
-            return@withContext
+            throw IllegalStateException(errMsg)
         }
 
         val info = validation.modelInfo
@@ -80,48 +92,111 @@ class LlamaCppEngine(
         // Check device RAM safety
         val memStatus = MemorySafetyGuard.checkMemory(context, fileLength)
         if (!memStatus.isSafeToLoad) {
-            _state.value = ModelRuntimeState.Error(
-                "Insufficient RAM: ${memStatus.recommendation}. App aborted load to prevent crashing the OS."
-            )
-            return@withContext
+            val errMsg = "Insufficient RAM: ${memStatus.recommendation}. App aborted load to prevent crashing the OS."
+            _state.value = ModelRuntimeState.Error(errMsg)
+            throw IllegalStateException(errMsg)
         }
 
-        _state.value = ModelRuntimeState.Loading(progress = 0.5f, message = "Initializing runtime (${info.architecture})...")
+        _state.value = ModelRuntimeState.Loading(progress = 0.4f, message = "Initializing runtime (${info.architecture})...")
 
         if (!LlamaNativeBridge.isLibraryLoaded) {
-            // Honest reporting per prompt requirements: do not fake generation, report exact requirement
-            _state.value = ModelRuntimeState.Error(
-                "Native runtime missing: The GGUF model file was successfully validated (${info.architecture}, ${info.tensorCount} tensors, context ${info.contextLength}), but libllama.so is not bundled in this build. Please package libllama.so into the APK to execute inferences on hardware."
-            )
-            return@withContext
+            val errMsg = "Native runtime missing: libpocket_ai_jni.so / libllama.so not available: ${LlamaNativeBridge.loadError}"
+            _state.value = ModelRuntimeState.Error(errMsg)
+            throw IllegalStateException(errMsg)
         }
 
+        // Ensure runtime is initialized
+        LlamaNativeBridge.init(context)
+
+        _state.value = ModelRuntimeState.Loading(progress = 0.6f, message = "Mapping model tensors...")
+
+        var handle = 0L
+
+        // Step 1: Attempt direct zero-copy file descriptor mmap
         try {
             val pfd = context.contentResolver.openFileDescriptor(uri, "r")
-                ?: throw IllegalStateException("Could not open file descriptor for model")
+            if (pfd != null) {
+                val fd = pfd.detachFd()
+                handle = LlamaNativeBridge.nativeLoadModel(
+                    fd = fd,
+                    modelPath = null,
+                    contextLength = model.contextLength,
+                    threadCount = model.threadCount,
+                    useGpu = model.useGpu
+                )
+            }
+        } catch (e: Exception) {
+            Log.w(TAG, "Direct FD load attempt encountered issue: ${e.localizedMessage}. Proceeding to fallback.", e)
+        }
 
-            val fd = pfd.detachFd()
-            val handle = LlamaNativeBridge.nativeInitModel(
-                fd = fd,
-                contextLength = model.contextLength,
-                threadCount = model.threadCount,
-                useGpu = model.useGpu
-            )
+        // Step 2: Fallback to staged cache copy if direct procfs access fails
+        if (handle == 0L) {
+            _state.value = ModelRuntimeState.Loading(progress = 0.8f, message = "Staging model to app cache fallback...")
+            val stagedPath = stageModelToCacheFallback(uri, model.displayName, fileLength)
+            if (stagedPath != null) {
+                handle = LlamaNativeBridge.nativeLoadModel(
+                    fd = -1,
+                    modelPath = stagedPath,
+                    contextLength = model.contextLength,
+                    threadCount = model.threadCount,
+                    useGpu = model.useGpu
+                )
+            }
+        }
 
-            if (handle == 0L) {
-                _state.value = ModelRuntimeState.Error("Failed to initialize model in llama.cpp native runtime.")
-                return@withContext
+        if (handle == 0L) {
+            val lastErr = LlamaNativeBridge.nativeGetLastError()
+            val errMessage = if (!lastErr.isNullOrBlank()) {
+                "Failed to initialize model in llama.cpp runtime: $lastErr"
+            } else {
+                "Failed to initialize model in llama.cpp native runtime."
+            }
+            _state.value = ModelRuntimeState.Error(errMessage)
+            throw IllegalStateException(errMessage)
+        }
+
+        nativeModelHandle = handle
+        activeConfig = model
+        _state.value = ModelRuntimeState.Loaded(
+            config = model,
+            architecture = info.architecture,
+            ramUsageBytes = fileLength
+        )
+        Log.i(TAG, "Successfully loaded model: ${model.displayName} with handle $handle")
+        Unit
+    }
+
+    private fun stageModelToCacheFallback(uri: Uri, displayName: String, fileLength: Long): String? {
+        return try {
+            val modelsDir = File(context.cacheDir, "staged_models").apply { mkdirs() }
+            val sanitized = displayName.replace(Regex("[^a-zA-Z0-9._-]"), "_")
+            val targetFile = File(modelsDir, sanitized)
+
+            if (targetFile.exists() && targetFile.length() == fileLength) {
+                Log.i(TAG, "Reusing existing staged model at ${targetFile.absolutePath}")
+                return targetFile.absolutePath
             }
 
-            nativeModelHandle = handle
-            activeConfig = model
-            _state.value = ModelRuntimeState.Loaded(
-                config = model,
-                architecture = info.architecture,
-                ramUsageBytes = fileLength
-            )
+            // Clean previous staged models to conserve storage
+            modelsDir.listFiles()?.forEach { it.delete() }
+
+            val freeBytes = context.cacheDir.usableSpace
+            if (freeBytes < fileLength + 50 * 1024 * 1024) {
+                Log.e(TAG, "Insufficient disk space for fallback copy: need $fileLength, available $freeBytes")
+                return null
+            }
+
+            Log.i(TAG, "Staging model file to ${targetFile.absolutePath}...")
+            context.contentResolver.openInputStream(uri)?.use { input ->
+                targetFile.outputStream().use { output ->
+                    input.copyTo(output)
+                }
+            } ?: return null
+
+            targetFile.absolutePath
         } catch (e: Exception) {
-            _state.value = ModelRuntimeState.Error("Error during model load: ${e.localizedMessage}")
+            Log.e(TAG, "Failed staging model to cache: ${e.localizedMessage}", e)
+            null
         }
     }
 
@@ -130,7 +205,22 @@ class LlamaCppEngine(
         val currentState = _state.value
 
         if (currentState !is ModelRuntimeState.Loaded || handle == 0L) {
-            trySend(GenerationEvent.Error("No local model is currently loaded. Please load a valid GGUF model in Model Management."))
+            val errReason = when (currentState) {
+                is ModelRuntimeState.Error -> "Model failed to load: ${currentState.message}"
+                is ModelRuntimeState.Loading -> "Model is still loading into memory (${currentState.message}). Please wait."
+                is ModelRuntimeState.Unloaded -> {
+                    val lastErr = LlamaNativeBridge.nativeGetLastError()
+                    if (!lastErr.isNullOrBlank()) {
+                        "Native runtime error: $lastErr"
+                    } else if (!LlamaNativeBridge.isLibraryLoaded) {
+                        "Native inference library is not available: ${LlamaNativeBridge.loadError}"
+                    } else {
+                        "No local model is currently loaded. Please load a valid GGUF model in Model Management."
+                    }
+                }
+                else -> "No local model is currently loaded. Please load a valid GGUF model in Model Management."
+            }
+            trySend(GenerationEvent.Error(errReason))
             close()
             return@callbackFlow
         }
@@ -180,7 +270,8 @@ class LlamaCppEngine(
             if (stopRequested.get()) {
                 trySend(GenerationEvent.Interrupted)
             } else if (resultCode != 0) {
-                trySend(GenerationEvent.Error("Native generation exited with error code $resultCode."))
+                val lastErr = LlamaNativeBridge.nativeGetLastError() ?: "Unknown native error"
+                trySend(GenerationEvent.Error("Native generation exited with error code $resultCode: $lastErr"))
             } else {
                 trySend(
                     GenerationEvent.Completed(
@@ -233,4 +324,3 @@ class LlamaCppEngine(
         _state.value = ModelRuntimeState.Unloaded
     }
 }
-

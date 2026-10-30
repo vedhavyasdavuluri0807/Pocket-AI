@@ -52,7 +52,7 @@ import com.pocketai.assistant.domain.model.MessageRole
 import com.pocketai.assistant.domain.model.MessageStatus
 import com.pocketai.assistant.ui.theme.BubbleAssistantShape
 import com.pocketai.assistant.ui.theme.BubbleUserShape
-import com.pocketai.assistant.ui.theme.OneUiTheme
+import com.pocketai.assistant.ui.theme.PocketTheme
 import com.pocketai.assistant.ui.theme.PillShape
 import com.pocketai.assistant.ui.theme.StatusError
 import com.pocketai.assistant.ui.theme.UserBubbleColor
@@ -75,8 +75,8 @@ fun ChatBubble(
 
     val alignment = if (isUser) Alignment.End else Alignment.Start
     val bubbleShape = if (isUser) BubbleUserShape else BubbleAssistantShape
-    val bubbleBackground = if (isUser) UserBubbleColor else OneUiTheme.colors.card
-    val textColor = if (isUser) UserBubbleText else OneUiTheme.colors.textPrimary
+    val bubbleBackground = if (isUser) UserBubbleColor else PocketTheme.colors.card
+    val textColor = if (isUser) UserBubbleText else PocketTheme.colors.textPrimary
 
     Column(
         modifier = modifier
@@ -148,7 +148,7 @@ fun ChatBubble(
                         Row(
                             modifier = Modifier
                                 .clip(PillShape)
-                                .background(OneUiTheme.colors.cardSecondary)
+                                .background(PocketTheme.colors.cardSecondary)
                                 .combinedClickable(onClick = { onRetry(message) })
                                 .padding(horizontal = 10.dp, vertical = 4.dp),
                             verticalAlignment = Alignment.CenterVertically
@@ -156,14 +156,14 @@ fun ChatBubble(
                             Icon(
                                 imageVector = Icons.Default.Refresh,
                                 contentDescription = "Retry",
-                                tint = OneUiTheme.colors.primary,
+                                tint = PocketTheme.colors.primary,
                                 modifier = Modifier.size(14.dp)
                             )
                             Spacer(modifier = Modifier.width(4.dp))
                             Text(
                                 text = "Retry",
                                 style = MaterialTheme.typography.labelSmall,
-                                color = OneUiTheme.colors.primary,
+                                color = PocketTheme.colors.primary,
                                 fontWeight = FontWeight.SemiBold
                             )
                         }
@@ -175,7 +175,7 @@ fun ChatBubble(
                 Text(
                     text = formatTime(message.timestamp),
                     style = MaterialTheme.typography.labelSmall,
-                    color = if (isUser) textColor.copy(alpha = 0.7f) else OneUiTheme.colors.textTertiary,
+                    color = if (isUser) textColor.copy(alpha = 0.7f) else PocketTheme.colors.textTertiary,
                     fontSize = 10.sp,
                     modifier = Modifier.align(Alignment.End)
                 )
@@ -224,7 +224,7 @@ fun MessageAttachmentBadges(
                 modifier = Modifier
                     .clip(RoundedCornerShape(8.dp))
                     .background(
-                        if (isUser) UserBubbleColor.copy(alpha = 0.85f) else OneUiTheme.colors.cardSecondary
+                        if (isUser) UserBubbleColor.copy(alpha = 0.85f) else PocketTheme.colors.cardSecondary
                     )
                     .padding(horizontal = 8.dp, vertical = 4.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -232,14 +232,14 @@ fun MessageAttachmentBadges(
                 Icon(
                     imageVector = Icons.Default.Description,
                     contentDescription = null,
-                    tint = if (isUser) UserBubbleText else OneUiTheme.colors.primary,
+                    tint = if (isUser) UserBubbleText else PocketTheme.colors.primary,
                     modifier = Modifier.size(16.dp)
                 )
                 Spacer(modifier = Modifier.width(6.dp))
                 Text(
                     text = att.fileName,
                     style = MaterialTheme.typography.labelSmall,
-                    color = if (isUser) UserBubbleText else OneUiTheme.colors.textPrimary,
+                    color = if (isUser) UserBubbleText else PocketTheme.colors.textPrimary,
                     maxLines = 1
                 )
             }
@@ -291,7 +291,7 @@ fun CodeBlockView(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(14.dp))
-            .background(OneUiTheme.colors.codeBlockBackground)
+            .background(PocketTheme.colors.codeBlockBackground)
             .padding(8.dp)
     ) {
         Row(
@@ -302,7 +302,7 @@ fun CodeBlockView(
             Text(
                 text = language.uppercase(),
                 style = MaterialTheme.typography.labelSmall,
-                color = OneUiTheme.colors.textSecondary,
+                color = PocketTheme.colors.textSecondary,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(start = 6.dp)
             )
@@ -313,7 +313,7 @@ fun CodeBlockView(
                 Icon(
                     imageVector = Icons.Default.ContentCopy,
                     contentDescription = "Copy code",
-                    tint = OneUiTheme.colors.primary,
+                    tint = PocketTheme.colors.primary,
                     modifier = Modifier.size(16.dp)
                 )
             }
@@ -329,7 +329,7 @@ fun CodeBlockView(
                 text = code,
                 fontFamily = FontFamily.Monospace,
                 fontSize = 13.sp,
-                color = OneUiTheme.colors.textPrimary
+                color = PocketTheme.colors.textPrimary
             )
         }
     }

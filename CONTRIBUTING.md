@@ -1,6 +1,6 @@
 # Contributing to Pocket AI
 
-Thank you for contributing to Pocket AI! We welcome contributions that uphold the project's core principles: **100% offline privacy**, **clean architecture**, and a **Samsung One UI design language**.
+Thank you for contributing to Pocket AI! We welcome contributions that uphold the project's core principles: **100% offline privacy**, **clean architecture**, and a **modern, accessible card-based mobile design language**.
 
 ---
 

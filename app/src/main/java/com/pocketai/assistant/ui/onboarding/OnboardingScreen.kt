@@ -32,9 +32,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.pocketai.assistant.ui.components.OneUiActionButton
+import com.pocketai.assistant.ui.components.PocketActionButton
 import com.pocketai.assistant.ui.components.RoundedSettingsCard
-import com.pocketai.assistant.ui.theme.OneUiTheme
+import com.pocketai.assistant.ui.theme.PocketTheme
 
 @Composable
 fun OnboardingScreen(
@@ -46,7 +46,7 @@ fun OnboardingScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(OneUiTheme.colors.background)
+            .background(PocketTheme.colors.background)
             .statusBarsPadding()
             .navigationBarsPadding()
             .padding(horizontal = 20.dp)
@@ -65,13 +65,13 @@ fun OnboardingScreen(
                 modifier = Modifier
                     .size(80.dp)
                     .clip(CircleShape)
-                    .background(OneUiTheme.colors.primary.copy(alpha = 0.12f)),
+                    .background(PocketTheme.colors.primary.copy(alpha = 0.12f)),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = Icons.Default.Psychology,
                     contentDescription = null,
-                    tint = OneUiTheme.colors.primary,
+                    tint = PocketTheme.colors.primary,
                     modifier = Modifier.size(44.dp)
                 )
             }
@@ -82,15 +82,15 @@ fun OnboardingScreen(
                 text = "Welcome to Pocket AI",
                 style = MaterialTheme.typography.displaySmall,
                 fontWeight = FontWeight.Bold,
-                color = OneUiTheme.colors.textPrimary
+                color = PocketTheme.colors.textPrimary
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "Your private, fully offline AI assistant designed for Samsung Galaxy phones.",
+                text = "Your private, fully offline AI assistant designed for your Android phone.",
                 style = MaterialTheme.typography.bodyLarge,
-                color = OneUiTheme.colors.textSecondary,
+                color = PocketTheme.colors.textSecondary,
                 modifier = Modifier.padding(horizontal = 12.dp),
                 textAlign = androidx.compose.ui.text.style.TextAlign.Center
             )
@@ -123,7 +123,7 @@ fun OnboardingScreen(
             Text(
                 text = "Note: AI models range from 1 GB to 5 GB. Performance and token speed depend directly on your device CPU and available RAM.",
                 style = MaterialTheme.typography.labelSmall,
-                color = OneUiTheme.colors.textTertiary,
+                color = PocketTheme.colors.textTertiary,
                 textAlign = androidx.compose.ui.text.style.TextAlign.Center,
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
@@ -135,7 +135,7 @@ fun OnboardingScreen(
                 .fillMaxWidth()
                 .padding(vertical = 16.dp)
         ) {
-            OneUiActionButton(
+            PocketActionButton(
                 text = "Get Started",
                 onClick = onContinueClick,
                 modifier = Modifier.fillMaxWidth()
@@ -160,13 +160,13 @@ private fun FeatureRow(
             modifier = Modifier
                 .size(36.dp)
                 .clip(CircleShape)
-                .background(OneUiTheme.colors.cardSecondary),
+                .background(PocketTheme.colors.cardSecondary),
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                tint = OneUiTheme.colors.primary,
+                tint = PocketTheme.colors.primary,
                 modifier = Modifier.size(20.dp)
             )
         }
@@ -178,13 +178,13 @@ private fun FeatureRow(
                 text = title,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
-                color = OneUiTheme.colors.textPrimary
+                color = PocketTheme.colors.textPrimary
             )
             Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = description,
                 style = MaterialTheme.typography.bodyMedium,
-                color = OneUiTheme.colors.textSecondary
+                color = PocketTheme.colors.textSecondary
             )
         }
     }

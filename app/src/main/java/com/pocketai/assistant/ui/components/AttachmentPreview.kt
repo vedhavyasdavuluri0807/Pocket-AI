@@ -33,7 +33,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.pocketai.assistant.domain.model.AttachmentItem
 import com.pocketai.assistant.domain.model.AttachmentType
-import com.pocketai.assistant.ui.theme.OneUiTheme
+import com.pocketai.assistant.ui.theme.PocketTheme
 import com.pocketai.assistant.ui.theme.PillShape
 
 @Composable
@@ -75,14 +75,14 @@ fun AttachmentChip(
     Row(
         modifier = modifier
             .clip(PillShape)
-            .background(OneUiTheme.colors.cardSecondary)
+            .background(PocketTheme.colors.cardSecondary)
             .padding(start = 12.dp, top = 6.dp, bottom = 6.dp, end = 6.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = OneUiTheme.colors.primary,
+            tint = PocketTheme.colors.primary,
             modifier = Modifier.size(18.dp)
         )
         Spacer(modifier = Modifier.width(8.dp))
@@ -92,14 +92,14 @@ fun AttachmentChip(
                 text = item.displayName,
                 style = MaterialTheme.typography.labelMedium,
                 fontWeight = FontWeight.Medium,
-                color = OneUiTheme.colors.textPrimary,
+                color = PocketTheme.colors.textPrimary,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
             Text(
                 text = formatSize(item.sizeBytes),
                 style = MaterialTheme.typography.labelSmall,
-                color = OneUiTheme.colors.textSecondary
+                color = PocketTheme.colors.textSecondary
             )
         }
 
@@ -109,7 +109,7 @@ fun AttachmentChip(
             modifier = Modifier
                 .size(22.dp)
                 .clip(CircleShape)
-                .background(OneUiTheme.colors.divider),
+                .background(PocketTheme.colors.divider),
             contentAlignment = Alignment.Center
         ) {
             IconButton(
@@ -119,7 +119,7 @@ fun AttachmentChip(
                 Icon(
                     imageVector = Icons.Default.Close,
                     contentDescription = "Remove attachment",
-                    tint = OneUiTheme.colors.textPrimary,
+                    tint = PocketTheme.colors.textPrimary,
                     modifier = Modifier.size(14.dp)
                 )
             }

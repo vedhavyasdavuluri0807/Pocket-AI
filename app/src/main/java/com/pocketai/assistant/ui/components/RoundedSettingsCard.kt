@@ -24,8 +24,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import com.pocketai.assistant.ui.theme.OneUiCardShape
-import com.pocketai.assistant.ui.theme.OneUiTheme
+import com.pocketai.assistant.ui.theme.PocketCardShape
+import com.pocketai.assistant.ui.theme.PocketTheme
 
 @Composable
 fun RoundedSettingsCard(
@@ -35,8 +35,8 @@ fun RoundedSettingsCard(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .clip(OneUiCardShape)
-            .background(OneUiTheme.colors.card)
+            .clip(PocketCardShape)
+            .background(PocketTheme.colors.card)
             .padding(vertical = 6.dp),
         content = content
     )
@@ -65,7 +65,7 @@ fun SettingsRow(
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                tint = OneUiTheme.colors.primary,
+                tint = PocketTheme.colors.primary,
                 modifier = Modifier.size(24.dp)
             )
             Spacer(modifier = Modifier.width(16.dp))
@@ -75,14 +75,14 @@ fun SettingsRow(
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleMedium,
-                color = OneUiTheme.colors.textPrimary
+                color = PocketTheme.colors.textPrimary
             )
             if (!subtitle.isNullOrBlank()) {
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(
                     text = subtitle,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = OneUiTheme.colors.textSecondary
+                    color = PocketTheme.colors.textSecondary
                 )
             }
         }
@@ -95,7 +95,7 @@ fun SettingsRow(
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 contentDescription = null,
-                tint = OneUiTheme.colors.textTertiary,
+                tint = PocketTheme.colors.textTertiary,
                 modifier = Modifier.size(20.dp)
             )
         }
@@ -107,7 +107,7 @@ fun SettingsCardDivider() {
     HorizontalDivider(
         modifier = Modifier.padding(horizontal = 20.dp),
         thickness = 0.8.dp,
-        color = OneUiTheme.colors.divider
+        color = PocketTheme.colors.divider
     )
 }
 

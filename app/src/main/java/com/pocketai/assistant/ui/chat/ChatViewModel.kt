@@ -8,9 +8,11 @@ import com.pocketai.assistant.attachments.AttachmentProcessor
 import com.pocketai.assistant.data.preferences.PreferencesManager
 import com.pocketai.assistant.domain.chat.ChatRepository
 import com.pocketai.assistant.domain.inference.GenerationEvent
+import com.pocketai.assistant.domain.inference.ModelRuntimeState
 import com.pocketai.assistant.domain.model.AttachmentItem
 import com.pocketai.assistant.domain.model.ChatMessage
 import com.pocketai.assistant.domain.model.ModelInfo
+import com.pocketai.assistant.domain.model.ModelLoadStatus
 import com.pocketai.assistant.inference.ModelManager
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,6 +28,7 @@ data class ChatUiState(
     val isGenerating: Boolean = false,
     val pendingAttachments: List<AttachmentItem> = emptyList(),
     val modelInfo: ModelInfo? = null,
+    val engineState: ModelRuntimeState = ModelRuntimeState.Unloaded,
     val assistantName: String = "Pocket Assistant"
 )
 
@@ -49,10 +52,17 @@ class ChatViewModel(
             }
             .launchIn(viewModelScope)
 
-        // Observe active model
+        // Observe active model info
         modelManager.currentModelInfo
             .onEach { info ->
                 _uiState.value = _uiState.value.copy(modelInfo = info)
+            }
+            .launchIn(viewModelScope)
+
+        // Observe native inference engine state
+        modelManager.engine.state
+            .onEach { engineState ->
+                _uiState.value = _uiState.value.copy(engineState = engineState)
             }
             .launchIn(viewModelScope)
 
@@ -97,6 +107,25 @@ class ChatViewModel(
             isGenerating = true
         )
 
+        val currentModel = modelManager.currentModelInfo.value
+
+        // If a model is chosen but not currently loaded into RAM, auto-load it before sending
+        if (currentModel != null && currentModel.loadStatus != ModelLoadStatus.LOADED) {
+            viewModelScope.launch {
+                val loadResult = modelManager.loadCurrentModel()
+                if (loadResult.isFailure) {
+                    _uiState.value = _uiState.value.copy(isGenerating = false)
+                    return@launch
+                }
+                executeSendMessage(text, attachments)
+            }
+            return
+        }
+
+        executeSendMessage(text, attachments)
+    }
+
+    private fun executeSendMessage(text: String, attachments: List<AttachmentItem>) {
         activeGenerationJob?.cancel()
         activeGenerationJob = viewModelScope.launch {
             try {
@@ -182,4 +211,3 @@ class ChatViewModelFactory(
         return ChatViewModel(chatRepository, modelManager, preferencesManager, attachmentProcessor) as T
     }
 }
-

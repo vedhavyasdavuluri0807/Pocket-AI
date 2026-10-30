@@ -19,7 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.unit.dp
-import com.pocketai.assistant.ui.theme.OneUiTheme
+import com.pocketai.assistant.ui.theme.PocketTheme
 import kotlinx.coroutines.delay
 
 @Composable
@@ -55,7 +55,7 @@ fun LoadingIndicator(
                 modifier = Modifier
                     .size(8.dp)
                     .scale(anim.value)
-                    .background(OneUiTheme.colors.primary, shape = CircleShape)
+                    .background(PocketTheme.colors.primary, shape = CircleShape)
             )
         }
     }
